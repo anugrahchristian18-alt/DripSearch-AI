@@ -20,7 +20,7 @@ if "ranked_products" not in st.session_state:
 
 # ─── Page Config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="StyleFinder AI",
+    page_title="DripSearch AI",
     page_icon="🛍️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -480,7 +480,7 @@ div[data-testid="stImage"] img {
 st.markdown("""
 <div class="hero">
     <div class="hero-badge">✦ AI-Powered Fashion Search</div>
-    <div class="hero-title">Style<span>Finder</span></div>
+    <div class="hero-title">DripSearch<span>AI</span></div>
     <div class="hero-subtitle">
         Upload any clothing image and discover the best matching products across Amazon,
         Flipkart, Myntra & more — instantly.
