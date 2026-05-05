@@ -705,7 +705,7 @@ with left_col:
 
     uploaded = st.file_uploader(
         label="Drop image here",
-        type=["jpg", "jpeg", "png", "webp"],
+        type=["jpg", "jpeg", "png", "webp", "heic"],
         label_visibility="collapsed"
     )
 
@@ -737,8 +737,25 @@ with right_col:
 
 # ─── Search Logic ──────────────────────────────────────────────────────────────
 if search_btn and uploaded:
-    image_bytes = uploaded.getvalue()
-    mime_type = uploaded.type or "image/jpeg"
+    from PIL import Image
+    import io
+
+    # Open image using PIL
+    image = Image.open(uploaded)
+
+    # Fix mobile issues (very important)
+    image = image.convert("RGB")
+
+    # Resize to avoid huge image problems
+    image = image.resize((512, 512))
+
+    # Convert to bytes
+    buffer = io.BytesIO()
+    image.save(buffer, format="JPEG")
+    image_bytes = buffer.getvalue()
+
+    # Force correct MIME type
+    mime_type = "image/jpeg"
 
     with left_col:
         with st.spinner("Analyzing your clothing..."):
