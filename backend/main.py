@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-from cloth_analyzer import analyze_cloth
-from product_search import search_products
+from backend.cloth_analyzer import analyze_cloth
+from backend.product_search import search_indian_products
 
 load_dotenv()
 
@@ -9,8 +9,10 @@ def rank_products(products, cloth_data):
     query_words = cloth_data["search_query"].lower().split()
 
     ranked_products = []
+    
 
     for product in products:
+        score =0
         title = product["title"] or ""
         title_words = title.lower().split()
 
@@ -67,7 +69,7 @@ def main():
     display_cloth_analysis(cloth_data)
 
     print("\nSearching similar products...")
-    products = search_products(cloth_data["search_query"])
+    products = search_indian_products(cloth_data["search_query"])
 
     ranked_products = rank_products(products, cloth_data)
 
