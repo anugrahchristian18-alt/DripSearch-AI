@@ -4,8 +4,8 @@ import tempfile
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
-from cloth_analyzer import analyze_cloth
-from product_search import search_indian_products
+from backend.cloth_analyzer import analyze_cloth
+from backend.product_search import search_indian_products
 
 app = FastAPI(title="DripSearch AI API")
 

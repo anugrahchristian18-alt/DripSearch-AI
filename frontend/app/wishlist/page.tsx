@@ -13,20 +13,25 @@ export default function WishlistPage() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    setProducts(getWishlist());
+  async function loadWishlist() {
+    const wishlist = await getWishlist();
+    setProducts(wishlist);
+  }
 
-    const update = () => {
-      setProducts(getWishlist());
-    };
+  loadWishlist();
 
-    window.addEventListener("wishlist-updated", update);
+  const update = () => {
+    loadWishlist();
+  };
 
-    return () =>
-      window.removeEventListener(
-        "wishlist-updated",
-        update
-      );
-  }, []);
+  window.addEventListener("wishlist-updated", update);
+
+  return () =>
+    window.removeEventListener(
+      "wishlist-updated",
+      update
+    );
+}, []);
 
   return (
     <main className="min-h-screen bg-[#080808]">

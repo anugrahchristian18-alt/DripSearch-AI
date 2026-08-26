@@ -16,14 +16,30 @@ export default function ProductCard({
   product,
 }: Props) {
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setSaved(isWishlisted(product.title));
+    async function checkWishlist() {
+      const result = await isWishlisted(product.title);
+      setSaved(result);
+    }
+
+    checkWishlist();
   }, [product.title]);
 
-  function handleWishlist() {
-    const result = toggleWishlist(product);
-    setSaved(result);
+  async function handleWishlist() {
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      const result = await toggleWishlist(product);
+      setSaved(result);
+    } catch (error) {
+      console.error("Wishlist error:", error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -45,12 +61,13 @@ export default function ProductCard({
 
         <button
           onClick={handleWishlist}
+          disabled={loading}
           aria-label="Add to wishlist"
           className={`absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-xl transition ${
             saved
               ? "bg-white text-black"
               : "bg-black/60 text-white hover:bg-white hover:text-black"
-          }`}
+          } ${loading ? "cursor-wait opacity-60" : ""}`}
         >
           <Heart
             size={18}

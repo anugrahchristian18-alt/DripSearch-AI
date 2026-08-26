@@ -1,42 +1,103 @@
 import { Product } from "./api";
+import { supabase } from "./supabase";
 
-const STORAGE_KEY = "dripsearch-wishlist";
+export async function getWishlist(): Promise<Product[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export function getWishlist(): Product[] {
-  if (typeof window === "undefined") return [];
+  if (!user) return [];
 
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  } catch {
+  const { data, error } = await supabase
+    .from("wishlist")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching wishlist:", error);
     return [];
   }
+
+  return data ?? [];
 }
 
-export function isWishlisted(title: string): boolean {
-  return getWishlist().some((item) => item.title === title);
-}
+export async function isWishlisted(
+  title: string
+): Promise<boolean> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export function toggleWishlist(product: Product): boolean {
-  const wishlist = getWishlist();
+  if (!user) return false;
 
-  const exists = wishlist.some(
-    (item) => item.title === product.title
-  );
+  const { data, error } = await supabase
+    .from("wishlist")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("title", title)
+    .maybeSingle();
 
-  let updated: Product[];
-
-  if (exists) {
-    updated = wishlist.filter(
-      (item) => item.title !== product.title
-    );
-  } else {
-    updated = [...wishlist, product];
+  if (error) {
+    console.error("Error checking wishlist:", error);
+    return false;
   }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return !!data;
+}
+
+export async function toggleWishlist(
+  product: Product
+): Promise<boolean> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("You must be logged in to use the wishlist.");
+  }
+
+  const { data: existing, error: checkError } = await supabase
+    .from("wishlist")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("title", product.title)
+    .maybeSingle();
+
+  if (checkError) {
+    throw checkError;
+  }
+
+  if (existing) {
+    const { error } = await supabase
+      .from("wishlist")
+      .delete()
+      .eq("id", existing.id)
+      .eq("user_id", user.id);
+
+    if (error) throw error;
+
+    window.dispatchEvent(new Event("wishlist-updated"));
+
+    return false;
+  }
+
+  const { error } = await supabase
+    .from("wishlist")
+    .insert({
+      user_id: user.id,
+      title: product.title,
+      price: product.price,
+      source: product.source,
+      link: product.link,
+      image: product.image,
+      rating: product.rating,
+      score: product.score,
+    });
+
+  if (error) throw error;
 
   window.dispatchEvent(new Event("wishlist-updated"));
 
-  return !exists;
+  return true;
 }
