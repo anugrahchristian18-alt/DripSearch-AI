@@ -86,7 +86,7 @@ export default function AnalysisPanel({
         </p>
 
         <p className="mt-1 text-sm text-white/80">
-          analysis?.search_query ?? "Unknown"
+          {analysis?.search_query ?? "Unknown"}
         </p>
       </div>
     </section>
