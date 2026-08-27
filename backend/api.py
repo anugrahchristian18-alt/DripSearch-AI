@@ -14,7 +14,8 @@ app = FastAPI(title="DripSearch AI API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000"
+    "http://localhost:3000",
+    "https://drip-search-ai.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
