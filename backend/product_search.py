@@ -24,7 +24,7 @@ def search_indian_products(query, max_results=8):
         "api_key": SERPAPI_KEY,
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params,timeout=30)
 
     print("STATUS CODE:", response.status_code)
 

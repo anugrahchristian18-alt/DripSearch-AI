@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.cloth_analyzer import analyze_cloth
 from backend.product_search import search_indian_products
+from backend.main import rank_products
 
 app = FastAPI(title="DripSearch AI API")
 
@@ -19,40 +20,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-def rank_products(products, cloth_data):
-
-    query_words = (
-        cloth_data.get("search_query", "")
-        .lower()
-        .split()
-    )
-
-    ranked_products = []
-
-    for product in products:
-
-        score = 0
-
-        title = product.get("title") or ""
-
-        title_words = title.lower().split()
-
-        for word in query_words:
-            if word in title_words:
-                score += 1
-
-        product["score"] = score
-
-        ranked_products.append(product)
-
-    ranked_products.sort(
-        key=lambda x: x["score"],
-        reverse=True
-    )
-
-    return ranked_products
 
 
 @app.get("/")
