@@ -15,33 +15,32 @@ export default function AnalysisPanel({
   analysis,
 }: Props) {
   const items = [
-    {
-      label: "Type",
-      value: analysis.clothing_type,
-      icon: Shirt,
-    },
-    {
-      label: "Color",
-      value: analysis.color,
-      icon: Palette,
-    },
-    {
-      label: "Pattern",
-      value: analysis.pattern,
-      icon: Tags,
-    },
-    {
-      label: "Style",
-      value: analysis.style,
-      icon: Sparkles,
-    },
-    {
-      label: "Gender",
-      value: analysis.gender,
-      icon: User,
-    },
-  ];
-
+  {
+    label: "Type",
+    value: analysis?.clothing_type ?? "Unknown",
+    icon: Shirt,
+  },
+  {
+    label: "Color",
+    value: analysis?.color ?? "Unknown",
+    icon: Palette,
+  },
+  {
+    label: "Pattern",
+    value: analysis?.pattern ?? "Unknown",
+    icon: Sparkles,
+  },
+  {
+    label: "Style",
+    value: analysis?.style ?? "Unknown",
+    icon: Shirt,
+  },
+  {
+    label: "Gender",
+    value: analysis?.gender ?? "Unknown",
+    icon: User,
+  },
+];
   return (
     <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
 
