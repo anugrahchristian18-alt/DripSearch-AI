@@ -54,9 +54,10 @@ async def analyze(file: UploadFile = File(...)):
 
         if not cloth_data:
             return {
-                "analysis": {},
-                "products": []
-            }
+        "error": "AI analysis is temporarily unavailable. Please try again.",
+        "analysis": None,
+        "products": []
+    }
 
         products = search_indian_products(
             cloth_data["search_query"]
