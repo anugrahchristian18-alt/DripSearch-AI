@@ -8,14 +8,15 @@ from backend.cloth_analyzer import analyze_cloth
 from backend.product_search import search_indian_products
 from backend.main import rank_products
 
+
 app = FastAPI(title="DripSearch AI API")
 
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://localhost:3000",
-    "https://drip-search-ai.vercel.app"
+        "http://localhost:3000",
+        "https://drip-search-ai.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -54,10 +55,10 @@ async def analyze(file: UploadFile = File(...)):
 
         if not cloth_data:
             return {
-        "error": "AI analysis is temporarily unavailable. Please try again.",
-        "analysis": None,
-        "products": []
-    }
+                "error": "AI analysis is temporarily unavailable. Please try again.",
+                "analysis": None,
+                "products": []
+            }
 
         products = search_indian_products(
             cloth_data["search_query"]
